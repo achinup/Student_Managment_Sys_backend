@@ -1,11 +1,15 @@
 package com.example.auth.controller;
-
 import com.example.auth.model.Student_Marks;
 import com.example.auth.repository.StudentMarksRepository;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+
+
 
 @RestController
 @RequestMapping("/api/student-marks")
@@ -28,14 +32,37 @@ public class StumController {
         return ResponseEntity.ok(marks);
     }
 
-    @PostMapping("/professor/update")
-    public ResponseEntity<String> updateMarks(@RequestBody List<Student_Marks> marksList) {
-        if (marksList == null || marksList.isEmpty()) {
+    @PatchMapping("/professor/update")
+    public ResponseEntity<String> updateRecord(@RequestBody List<Student_Marks> studentList) {
+        if (studentList == null || studentList.isEmpty()) {
             return ResponseEntity.badRequest().body("Marks list cannot be empty");
         }
-        stu.saveAll(marksList);
+    
+        for (Student_Marks newRec : studentList) {
+
+            if (newRec.getId() == null) {
+                // If id is null, save as a new record
+                stu.save(newRec);
+                continue;
+            }
+            Optional<Student_Marks> existingData = stu.findById(newRec.getId()); // Using findById now
+           
+            if (existingData.isPresent()) {
+                // Update the existing record
+                Student_Marks markToUpdate = existingData.get();
+                markToUpdate.setMarks(newRec.getMarks());
+                markToUpdate.setSection(newRec.getSection());
+                markToUpdate.setCourse(newRec.getCourse());
+                stu.save(markToUpdate);
+            } else {
+                // Insert new record if it doesn't exist
+                return ResponseEntity.badRequest().body("Student with ID " + newRec.getId() + " not found");
+            }
+        }
+    
         return ResponseEntity.ok("Marks updated successfully");
     }
+    
 
     @GetMapping("/professor/stumark")
     public ResponseEntity<List<Student_Marks>> getCourseSectionMark(@RequestParam String course, @RequestParam String section) {
@@ -46,12 +73,21 @@ public class StumController {
         return ResponseEntity.ok(marks);
     }
 
-    @PostMapping("/professor/add")
-    public ResponseEntity<String> addNewStudentMarks(@RequestBody List<Student_Marks> marksList) {
-        if (marksList == null || marksList.isEmpty()) {
-            return ResponseEntity.badRequest().body("Marks list cannot be empty");
-        }
-        stu.saveAll(marksList);
-        return ResponseEntity.ok("New student marks added successfully");
+    @PatchMapping("/student/update-email")
+public ResponseEntity<String> updateStudentEmail(@RequestParam String oldemail, @RequestParam String email) {
+    List<Student_Marks> existingStudent = stu.findByEmail(oldemail);
+
+     if (existingStudent.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No professor found with the given email");
     }
+    
+    for (Student_Marks Student : existingStudent) {
+        Student.setEmail(email);
+    }
+    
+    stu.saveAll(existingStudent);
+    
+    return ResponseEntity.ok("Professor's email updated successfully");
+}
+
 }

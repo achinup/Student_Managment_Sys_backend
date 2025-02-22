@@ -1,15 +1,17 @@
 package com.example.auth.model;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "Student_Marks")
+@Table(name = "Student_Marks", 
+       uniqueConstraints = {@UniqueConstraint(columnNames = {"usn", "course"})})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Student_Marks {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

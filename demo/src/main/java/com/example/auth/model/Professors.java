@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "Professors")
+@Table(name = "Professors",uniqueConstraints = @UniqueConstraint(columnNames={"course","section"}))
 @Getter
 @Setter
 @NoArgsConstructor
