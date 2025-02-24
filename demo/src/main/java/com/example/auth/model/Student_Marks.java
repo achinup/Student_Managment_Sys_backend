@@ -16,18 +16,19 @@ public class Student_Marks {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String usn;
+    @ManyToOne
+    @JoinColumn(name = "usn", nullable = false)
+    private Usn_section usn_section; // Ensure Usn_section has @Column(name = "usn")
 
+    @Column(nullable = false)
+    private String section;
+     
     @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
-    private String section;
-    
-    @Column(nullable = false)
     private String course;
     
     @Column(nullable = true)
-    private int marks;
+    private Integer marks; // Changed to Integer for nullable values
 }
