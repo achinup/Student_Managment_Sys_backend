@@ -38,5 +38,18 @@ public class Usn_secController {
         
          return ResponseEntity.ok("Marks updated successfully");
     }
+
+    @PatchMapping("/update")
+    public ResponseEntity<String> UpdateSection(@RequestBody List<Usn_section> Us)
+    {
+        if(Us == null || Us.isEmpty())
+      ResponseEntity.badRequest().body("Student section list cannot be empty");
+        for(Usn_section u:Us)
+        {
+            studentService.update(u);
+        }
+        
+         return ResponseEntity.ok("Student section List updated successfully");
+    }
     
 }

@@ -19,16 +19,8 @@ public class StudentService {
     @Autowired
     public StudentMarksRepository studentMarksRepository;
 
-    // Add a new student
-    // public Student addStudent(String usn, String section) {
-    //     if (studentRepository.existsById(usn)) {
-    //         throw new RuntimeException("Student with USN " + usn + " already exists.");
-    //     }
-    //     Student student = new Student(usn, section);
-    //     return studentRepository.save(student);
-    // }
+   
 
-    // Update student section and reflect it in StudentMarks
     public String updateStudent(String usn) {
         Optional<Usn_section> student = studentRepository.findById(usn);
                
@@ -38,7 +30,7 @@ public class StudentService {
         }
 
         else
-
+        
         return "notfounderror";
         
     
@@ -49,11 +41,12 @@ public class StudentService {
     if (studentRepository.existsById(s.getUsn())) {  // Assuming 'usn' is the primary key
         studentRepository.save(s);
 
-        // List<Student_Marks> marksList = studentMarksRepository.findByUsn_section_Usn(s.getUsn());
-        // for (Student_Marks marks : marksList) {
-        //     marks.setSection(s.getSection());
-        //     studentMarksRepository.save(marks);
-        // }
+        List<Student_Marks> marksList = studentMarksRepository.findByUsn(s.getUsn());
+        if(!marksList.isEmpty())
+        for (Student_Marks marks : marksList) {
+            marks.setSection(s.getSection());
+            studentMarksRepository.save(marks);
+        }
 
     } else {
         throw new EntityNotFoundException("Student not found with USN: " + s.getUsn());

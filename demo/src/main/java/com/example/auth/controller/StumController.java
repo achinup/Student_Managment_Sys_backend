@@ -91,4 +91,7 @@ public class StumController {
         stu.saveAll(existingStudent);
         return ResponseEntity.ok("Student's email updated successfully");
     }
+
+
+   
 }

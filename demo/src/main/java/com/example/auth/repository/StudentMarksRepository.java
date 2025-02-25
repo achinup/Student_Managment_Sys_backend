@@ -17,6 +17,9 @@ public interface StudentMarksRepository extends JpaRepository<Student_Marks, Lon
     List<Student_Marks> findByCourseAndSection(String course, String section);
     
     Optional<Student_Marks> findById(Long id);
+
+    @Query("SELECT sm FROM Student_Marks sm WHERE sm.usn_section.usn = :usn")
+    List<Student_Marks> findByUsn(@Param("usn") String usn);
     
 
    
